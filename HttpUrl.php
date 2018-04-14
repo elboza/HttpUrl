@@ -1,5 +1,4 @@
 <?php 
-require_once 'file_get_contents.php';
 
 class HttpUrl{
 	private $transfer_mode;
@@ -12,20 +11,23 @@ class HttpUrl{
 			case 'curl':
 				$this->transfer_mode='curl';
 				break;
-			case 'xfopen':
-				$this->transfer_mode='xfopen';
-				break;
 			defualt:
 				$this->transfer_mode='fopen';
 				break;
 		}
 	}
+	//get, post, put, delete
+	//get_curl,post_curl,put_curl,delete_curl
+	//get_fopen,post_fopen,put_fopen,delete_fopen
+	//curl_req
+	//fopen_req
+
+	//get(url,params,transfer_mode)
+	//post(url,params,data,encoding,transfer_mode)
+
+
 	private function retreive_data_fopen($url){
 		$str=file_get_contents($url);
-		return $str;
-	}
-	private function retreive_data_xfopen($url){
-		$str=php_compat_file_get_contents($url);
 		return $str;
 	}
 	private function retreive_data_curl($url){
@@ -38,29 +40,40 @@ class HttpUrl{
 		curl_close($curl);
 		return $data;
 	}
+	public function post_data($url,$data=null){
+		if(!function_exists('curl_init')) return "curl not exists";
+		$curl = curl_init();
+		curl_setopt($curl, CURLOPT_URL, $url);
+		curl_setopt($curl, CURLOPT_POST, 1);
+		curl_setopt($curl, CURLOPT_POSTFIELDS,$data);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($curl, CURLOPT_HEADER, false);
+		$data = curl_exec($curl);
+		curl_close($curl);
+		return $data;
+	}
 	public function get_data($url){
 		switch($this->transfer_mode){
 			case 'curl':
 				return $this->retreive_data_curl($url);
-				break;
-			case 'xfopen':
-				return $this->retreive_data_xfopen($url);
 				break;
 			default:
 				return $this->retreive_data_fopen($url);
 				break;
 		}
 	}
-	public function test_connections(){
+	public function test_connections($url=null,$endline=null){
 		//$url="http://weather.noaa.gov/pub/data/observations/metar/stations/LIRF.TXT";
-		$url="http://tgftp.nws.noaa.gov/data/observations/metar/stations/LIRF.TXT";
-		echo "grab test:<br>";
+		$metar="http://tgftp.nws.noaa.gov/data/observations/metar/stations/LIRF.TXT";
+		if(!$url) $url=$metar;
+		if(!$endline==null) $endline="<br>";
+		echo "grab test:{$endline}";
 		echo "file_get_contents:";
 		echo $this->retreive_data_fopen($url);
-		echo ":<br>";
+		echo ":{$endline}";
 		echo "curl:";
 		echo $this->retreive_data_curl($url);
-		echo ":<br>";
+		echo ":{$endline}";
 	}
 }
 ?>
