@@ -1,5 +1,5 @@
 <?php
-require '../src/HttpUrl.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 use HttpUrl\HttpUrl;
 
 $x=new HttpUrl();

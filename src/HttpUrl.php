@@ -123,7 +123,6 @@ class HttpUrl{
 				$options[CURLOPT_POSTFIELDS] = http_build_query($data);
 				break;
 		}
-		//var_dump($options);
 		return $this->perform_curl($url,$options);
 	}
 
@@ -148,7 +147,6 @@ class HttpUrl{
 				$options[CURLOPT_POSTFIELDS] = http_build_query($data);
 				break;
 		}
-		//var_dump($options);
 		return $this->perform_curl($url,$options);
 	}
 
@@ -173,7 +171,6 @@ class HttpUrl{
 				$options[CURLOPT_POSTFIELDS] = http_build_query($data);
 				break;
 		}
-		//var_dump($options);
 		return $this->perform_curl($url,$options);
 	}
 
