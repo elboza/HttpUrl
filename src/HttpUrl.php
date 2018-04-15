@@ -96,20 +96,20 @@ class HttpUrl{
 	private function get_curl($url,$params){
 		$url=$this->build_url($url,$params);
 		$options = array(CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-								CURLOPT_HEADER => $this->includeheaders
-                );
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HEADER => $this->includeheaders
+			);
 		return $this->perform_curl($url,$options);
 	}
 
 	private function post_curl($url,$params=null,$data,$encoding=null){
 		$url=$this->build_url($url,$params);
 		$options = array(CURLOPT_URL => $url,
-								CURLOPT_POST => true,
-								//CURLOPT_POSTFIELDS => $data,
-                CURLOPT_RETURNTRANSFER => true,
-								CURLOPT_HEADER => $this->includeheaders
-                );
+			CURLOPT_POST => true,
+			//CURLOPT_POSTFIELDS => $data,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HEADER => $this->includeheaders
+			);
 		if(!$encoding) $encoding=$this->post_encode;
 		switch($encoding){
 			case "{$this->encoding['json']}":
@@ -130,11 +130,11 @@ class HttpUrl{
 	private function put_curl($url,$params=null,$data,$encoding=null){
 		$url=$this->build_url($url,$params);
 		$options = array(CURLOPT_URL => $url,
-								CURLOPT_PUT => true,
-								//CURLOPT_POSTFIELDS => $data,
-                CURLOPT_RETURNTRANSFER => true,
-								CURLOPT_HEADER => $this->includeheaders
-                );
+			CURLOPT_PUT => true,
+			//CURLOPT_POSTFIELDS => $data,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HEADER => $this->includeheaders
+			);
 		if(!$encoding) $encoding=$this->post_encode;
 		switch($encoding){
 			case "{$this->encoding['json']}":
@@ -155,11 +155,11 @@ class HttpUrl{
 	private function delete_curl($url,$params=null,$data,$encoding=null){
 		$url=$this->build_url($url,$params);
 		$options = array(CURLOPT_URL => $url,
-								CURLOPT_DELETE => true,
-								//CURLOPT_POSTFIELDS => $data,
-                CURLOPT_RETURNTRANSFER => true,
-								CURLOPT_HEADER => $this->includeheaders
-                );
+			CURLOPT_DELETE => true,
+			//CURLOPT_POSTFIELDS => $data,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_HEADER => $this->includeheaders
+			);
 		if(!$encoding) $encoding=$this->post_encode;
 		switch($encoding){
 			case "{$this->encoding['json']}":
@@ -192,10 +192,10 @@ class HttpUrl{
 
 	private function post_fopen($url,$params=null,$data,$encoding=null){
 		$opts = array('http' =>
-    	array(
-        	'method'  => 'POST'
-      	)
-  		);
+		array(
+			'method'  => 'POST'
+			)
+		);
 		if(!$encoding) $encoding=$this->post_encode;
 		switch($encoding){
 			case "{$this->encoding['json']}":
@@ -214,10 +214,10 @@ class HttpUrl{
 
 	private function put_fopen($url,$params=null,$data,$encoding=null){
 		$opts = array('http' =>
-    	array(
-        	'method'  => 'PUT'
-      	)
-  		);
+		array(
+			'method'  => 'PUT'
+			)
+		);
 		if(!$encoding) $encoding=$this->post_encode;
 		switch($encoding){
 			case "{$this->encoding['json']}":
@@ -236,10 +236,10 @@ class HttpUrl{
 
 	private function delete_fopen($url,$params=null,$data,$encoding=null){
 		$opts = array('http' =>
-    	array(
-        	'method'  => 'DELETE'
-      	)
-  		);
+		array(
+			'method'  => 'DELETE'
+			)
+		);
 		if(!$encoding) $encoding=$this->post_encode;
 		switch($encoding){
 			case "{$this->encoding['json']}":

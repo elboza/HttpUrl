@@ -6,6 +6,9 @@ set_transfer_mode ~~> 'curl' | 'fopen'
 set_post_encode   ~~> 'json' | 'form'
 set_show_headers  ~~>  true  |  false 
 ```
+`'fopen'` is the default transfer mode.
+`'form'` is the default post encodeing.
+`false` is the default show header.
 
 ```
 get    ($url,$params=null,$transfer_mode=null)
