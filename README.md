@@ -1,3 +1,23 @@
+# HttpUrl
+### easy http url in PHP
+
+```
+set_transfer_mode ~~> 'curl' | 'fopen'
+set_post_encode   ~~> 'json' | 'form'
+set_show_headers  ~~>  true  |  false 
+```
+
+```
+get    ($url,$params=null,$transfer_mode=null)
+post   ($url,$data,$encoding=null,$transfer_mode=null,$params=null)
+put    ($url,$data,$encoding=null,$transfer_mode=null,$params=null)
+delete ($url,$data,$encoding=null,$transfer_mode=null,$params=null)
+```
+`$data` has to be an array.
+
+## example
+`test.php` file:
+```
 <?php
 require '../src/HttpUrl.php';
 use HttpUrl\HttpUrl;
@@ -30,3 +50,4 @@ echo $x->delete($url,array('data1'=>'48'));
 //add if json encoded request
 //echo $x->delete($url,array('data1'=>'48'),'json');
 ?>
+```

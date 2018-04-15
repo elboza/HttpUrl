@@ -4,13 +4,15 @@ namespace HttpUrl;
 class HttpUrl{
 	private $transfer_mode;
 	private $mode=array('curl'=>'curl','fopen'=>'fopen');
-	private $encoding=array('json'=>'','form'=>'');
+	private $encoding=array('json'=>'json','form'=>'form');
 	private $post_encode;
 	private $includeheaders=false;
+
 	function __construct($mode=null){
 		$this->set_transfer_mode($mode);
 		$this->set_post_encode();
 	}
+
 	public function set_transfer_mode($mode=null){
 		if($mode==null) return;
 		switch($mode){
@@ -37,14 +39,6 @@ class HttpUrl{
 	public function set_show_headers(bool $bool){
 		$this->includeheaders=$bool;
 	}
-	//get, post, put, delete
-	//get_curl,post_curl,put_curl,delete_curl
-	//get_fopen,post_fopen,put_fopen,delete_fopen
-	//curl_req
-	//fopen_req
-
-	//get(url,params,transfer_mode)
-	//post(url,params,data,encoding,transfer_mode)
 
 	private function build_url($url,$params,$questionmark=true){
 		//$params == array(...)
@@ -63,14 +57,38 @@ class HttpUrl{
 		}
 	}
 
-	public function post($url,$params=null,$data,$encoding=null,$transfer_mode=null){
+	public function post($url,$data,$encoding=null,$transfer_mode=null,$params=null){
 		if(!$transfer_mode) $transfer_mode=$this->transfer_mode;
 		switch($transfer_mode){
 			case "{$this->mode['curl']}":
 				return $this->post_curl($url,$params,$data,$encoding);
 				break;
 			default:
-				//return $this->get_fopen($url,$params);
+				return $this->post_fopen($url,$params,$data,$encoding);
+				break;
+		}
+	}
+
+	public function put($url,$data,$encoding=null,$transfer_mode=null,$params=null){
+		if(!$transfer_mode) $transfer_mode=$this->transfer_mode;
+		switch($transfer_mode){
+			case "{$this->mode['curl']}":
+				return $this->put_curl($url,$params,$data,$encoding);
+				break;
+			default:
+				return $this->put_fopen($url,$params,$data,$encoding);
+				break;
+		}
+	}
+
+	public function delete($url,$data,$encoding=null,$transfer_mode=null,$params=null){
+		if(!$transfer_mode) $transfer_mode=$this->transfer_mode;
+		switch($transfer_mode){
+			case "{$this->mode['curl']}":
+				return $this->delete_curl($url,$params,$data,$encoding);
+				break;
+			default:
+				return $this->delete_fopen($url,$params,$data,$encoding);
 				break;
 		}
 	}
@@ -84,7 +102,7 @@ class HttpUrl{
 		return $this->perform_curl($url,$options);
 	}
 
-	private function post_curl($url,$params,$data,$encoding=null){
+	private function post_curl($url,$params=null,$data,$encoding=null){
 		$url=$this->build_url($url,$params);
 		$options = array(CURLOPT_URL => $url,
 								CURLOPT_POST => true,
@@ -94,11 +112,65 @@ class HttpUrl{
                 );
 		if(!$encoding) $encoding=$this->post_encode;
 		switch($encoding){
-			case "$this->encoding['json']":
-				//echo "json enc";
+			case "{$this->encoding['json']}":
+				$data_string = json_encode($data);
+				$options[CURLOPT_HTTPHEADER] = array(
+					'Content-Type: application/json',
+					'Content-Length: ' . strlen($data_string));
+				$options[CURLOPT_POSTFIELDS] = $data_string;
 				break;
 			default:
-				$options[CURLOPT_POSTFIELDS]= http_build_query($data);
+				$options[CURLOPT_POSTFIELDS] = http_build_query($data);
+				break;
+		}
+		//var_dump($options);
+		return $this->perform_curl($url,$options);
+	}
+
+	private function put_curl($url,$params=null,$data,$encoding=null){
+		$url=$this->build_url($url,$params);
+		$options = array(CURLOPT_URL => $url,
+								CURLOPT_PUT => true,
+								//CURLOPT_POSTFIELDS => $data,
+                CURLOPT_RETURNTRANSFER => true,
+								CURLOPT_HEADER => $this->includeheaders
+                );
+		if(!$encoding) $encoding=$this->post_encode;
+		switch($encoding){
+			case "{$this->encoding['json']}":
+				$data_string = json_encode($data);
+				$options[CURLOPT_HTTPHEADER] = array(
+					'Content-Type: application/json',
+					'Content-Length: ' . strlen($data_string));
+				$options[CURLOPT_POSTFIELDS] = $data_string;
+				break;
+			default:
+				$options[CURLOPT_POSTFIELDS] = http_build_query($data);
+				break;
+		}
+		//var_dump($options);
+		return $this->perform_curl($url,$options);
+	}
+
+	private function delete_curl($url,$params=null,$data,$encoding=null){
+		$url=$this->build_url($url,$params);
+		$options = array(CURLOPT_URL => $url,
+								CURLOPT_DELETE => true,
+								//CURLOPT_POSTFIELDS => $data,
+                CURLOPT_RETURNTRANSFER => true,
+								CURLOPT_HEADER => $this->includeheaders
+                );
+		if(!$encoding) $encoding=$this->post_encode;
+		switch($encoding){
+			case "{$this->encoding['json']}":
+				$data_string = json_encode($data);
+				$options[CURLOPT_HTTPHEADER] = array(
+					'Content-Type: application/json',
+					'Content-Length: ' . strlen($data_string));
+				$options[CURLOPT_POSTFIELDS] = $data_string;
+				break;
+			default:
+				$options[CURLOPT_POSTFIELDS] = http_build_query($data);
 				break;
 		}
 		//var_dump($options);
@@ -117,18 +189,71 @@ class HttpUrl{
 	private function get_fopen($url,$params){
 		return file_get_contents($this->build_url($url,$params));
 	}
-	
-	public function post_data($url,$data=null){
-		if(!function_exists('curl_init')) return "curl not exists";
-		$curl = curl_init();
-		curl_setopt($curl, CURLOPT_URL, $url);
-		curl_setopt($curl, CURLOPT_POST, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS,$data);
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_HEADER, false);
-		$data = curl_exec($curl);
-		curl_close($curl);
-		return $data;
+
+	private function post_fopen($url,$params=null,$data,$encoding=null){
+		$opts = array('http' =>
+    	array(
+        	'method'  => 'POST'
+      	)
+  		);
+		if(!$encoding) $encoding=$this->post_encode;
+		switch($encoding){
+			case "{$this->encoding['json']}":
+				$data_string = json_encode($data);
+				$opts['http']['header'] = array('Content-Type: application/json','Content-Length: ' . strlen($data_string));
+					$opts['http']['content'] = $data_string;
+				break;
+			default:
+					$opts['http']['header'] = ['Content-type: application/x-www-form-urlencoded'];
+					$opts['http']['content'] = http_build_query($data);
+				break;
+		}
+		$context  = stream_context_create($opts);
+		return file_get_contents($url, false, $context);
+	}
+
+	private function put_fopen($url,$params=null,$data,$encoding=null){
+		$opts = array('http' =>
+    	array(
+        	'method'  => 'PUT'
+      	)
+  		);
+		if(!$encoding) $encoding=$this->post_encode;
+		switch($encoding){
+			case "{$this->encoding['json']}":
+				$data_string = json_encode($data);
+				$opts['http']['header'] = array('Content-Type: application/json','Content-Length: ' . strlen($data_string));
+					$opts['http']['content'] = $data_string;
+				break;
+			default:
+					$opts['http']['header'] = ['Content-type: application/x-www-form-urlencoded'];
+					$opts['http']['content'] = http_build_query($data);
+				break;
+		}
+		$context  = stream_context_create($opts);
+		return file_get_contents($url, false, $context);
+	}
+
+	private function delete_fopen($url,$params=null,$data,$encoding=null){
+		$opts = array('http' =>
+    	array(
+        	'method'  => 'DELETE'
+      	)
+  		);
+		if(!$encoding) $encoding=$this->post_encode;
+		switch($encoding){
+			case "{$this->encoding['json']}":
+				$data_string = json_encode($data);
+				$opts['http']['header'] = array('Content-Type: application/json','Content-Length: ' . strlen($data_string));
+					$opts['http']['content'] = $data_string;
+				break;
+			default:
+					$opts['http']['header'] = ['Content-type: application/x-www-form-urlencoded'];
+					$opts['http']['content'] = http_build_query($data);
+				break;
+		}
+		$context  = stream_context_create($opts);
+		return file_get_contents($url, false, $context);
 	}
 	
 	public function test_connections($url=null,$endline=null){
