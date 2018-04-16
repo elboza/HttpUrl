@@ -1,5 +1,6 @@
 {
     "name": "httpurl/httpurl",
+	"description" : "easy http url in PHP. (get, post, put, delete for both 'curl' and 'file_get_content')",
     "license": "Beerware",
     "authors": [
         {
