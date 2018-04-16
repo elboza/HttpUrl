@@ -8,12 +8,14 @@ $x=new HttpUrl();
 $x->test_connections();
 
 //select transfer mode (curl or fopen)
-//$x->set_transfer_mode('curl');
+$x->set_transfer_mode('curl');
 
 //set if show headersin response
 //$x->set_show_headers(true);
 
-$url='http://localhost/~drugo/httpurl/test/test_server.php';
+//run http server in the project root directory:
+//php -S localhost:3000 -r .
+$url='localhost:3000/test/test_server.php';
 
 echo "<br><br>";
 echo $x->get($url,array('data1'=>42));

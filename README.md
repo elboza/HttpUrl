@@ -6,9 +6,9 @@ set_transfer_mode ~~> 'curl' | 'fopen'
 set_post_encode   ~~> 'json' | 'form'
 set_show_headers  ~~>  true  |  false 
 ```
-`'fopen'` is the default transfer mode.
-`'form'` is the default post encodeing.
-`false` is the default show header.
+- `'fopen'` is the default transfer mode.
+- `'form'` is the default post encodeing.
+- `false` is the default show header.
 
 ```
 get    ($url,$params=null,$transfer_mode=null)
@@ -16,13 +16,13 @@ post   ($url,$data,$encoding=null,$transfer_mode=null,$params=null)
 put    ($url,$data,$encoding=null,$transfer_mode=null,$params=null)
 delete ($url,$data,$encoding=null,$transfer_mode=null,$params=null)
 ```
-`$data` has to be an array.
+- `$data` has to be an array.
 
 ## example
 `test.php` file:
 ```
 <?php
-require '../src/HttpUrl.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 use HttpUrl\HttpUrl;
 
 $x=new HttpUrl();
@@ -31,12 +31,14 @@ $x=new HttpUrl();
 $x->test_connections();
 
 //select transfer mode (curl or fopen)
-//$x->set_transfer_mode('curl');
+$x->set_transfer_mode('curl');
 
 //set if show headersin response
 //$x->set_show_headers(true);
 
-$url='http://localhost/~drugo/httpurl/test/test_server.php';
+//run http server in the project root directory:
+//php -S localhost:3000 -r .
+$url='localhost:3000/test/test_server.php';
 
 echo "<br><br>";
 echo $x->get($url,array('data1'=>42));
@@ -54,3 +56,6 @@ echo $x->delete($url,array('data1'=>'48'));
 //echo $x->delete($url,array('data1'=>'48'),'json');
 ?>
 ```
+run:
+- `php -S localhost:3000 -r .`
+- `composer install`
