@@ -97,6 +97,7 @@ class HttpUrl{
 		$url=$this->build_url($url,$params);
 		$options = array(CURLOPT_URL => $url,
 			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HEADER => $this->includeheaders
 			);
 		return $this->perform_curl($url,$options);
@@ -108,6 +109,7 @@ class HttpUrl{
 			CURLOPT_POST => true,
 			//CURLOPT_POSTFIELDS => $data,
 			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HEADER => $this->includeheaders
 			);
 		if(!$encoding) $encoding=$this->post_encode;
@@ -132,6 +134,7 @@ class HttpUrl{
 			CURLOPT_PUT => true,
 			//CURLOPT_POSTFIELDS => $data,
 			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HEADER => $this->includeheaders
 			);
 		if(!$encoding) $encoding=$this->post_encode;
@@ -156,6 +159,7 @@ class HttpUrl{
 			CURLOPT_DELETE => true,
 			//CURLOPT_POSTFIELDS => $data,
 			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_FOLLOWLOCATION => true,
 			CURLOPT_HEADER => $this->includeheaders
 			);
 		if(!$encoding) $encoding=$this->post_encode;
